@@ -9,4 +9,6 @@ import com.example.itauchallenge.entity.CustomerEntity;
 public interface CustomerRepository extends CrudRepository<CustomerEntity, Integer>{
 
 	Optional<CustomerEntity> findByCpf(String cpf);
+	
+	Optional<CustomerEntity> findByEmail(String email);
 }

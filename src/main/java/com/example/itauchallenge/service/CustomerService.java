@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.example.itauchallenge.entity.CardEntity;
 import com.example.itauchallenge.entity.CustomerEntity;
 import com.example.itauchallenge.entity.PurchaseEntity;
+import com.example.itauchallenge.exceptions.CustomerException;
 import com.example.itauchallenge.model.CardDTO;
 import com.example.itauchallenge.model.CardPurchasesDTO;
 import com.example.itauchallenge.model.CardsDTO;
@@ -39,8 +40,15 @@ public class CustomerService {
 	private ModelMapper mapper;
 
 	public void createCustomer(CustomerDTO customerDTO) {
-		// adicionar try/catch
-		// adicionar validações para nao cadastrar com cpf e email duplicado
+		
+		if (customerRepository.findByCpf(customerDTO.getCpf()).isPresent()) {
+			throw new CustomerException("This document number is already registered!");
+		}
+		
+		if (customerRepository.findByEmail(customerDTO.getEmail()).isPresent()) {
+			throw new CustomerException("This email is already registered!");
+		}
+		
 		customerRepository.save(mapper.map(customerDTO, CustomerEntity.class));
 	}
 
@@ -55,7 +63,7 @@ public class CustomerService {
 	}
 
 	public CardDTO createCard(String CustomerCpf) {
-		CustomerEntity customer = findCustomerById(CustomerCpf);
+		CustomerEntity customer = findCustomerByCpf(CustomerCpf);
 
 		CardEntity cardEntity = createCard();
 		customer.getCards().add(cardEntity);
@@ -68,7 +76,7 @@ public class CustomerService {
 	public CardsDTO getCards(String customerCpf) {
 		CardsDTO cards = new CardsDTO();
 
-		for (CardEntity cardEntity : findCustomerById(customerCpf).getCards()) {
+		for (CardEntity cardEntity : findCustomerByCpf(customerCpf).getCards()) {
 			cards.addCard(mapper.map(cardEntity, CardDTO.class));
 		}
 
@@ -88,7 +96,7 @@ public class CustomerService {
 	}
 
 	public CustomerCardsPurchasesDTO customerComplete(String customerCpf) {
-		CustomerEntity customerEntity = findCustomerById(customerCpf);
+		CustomerEntity customerEntity = findCustomerByCpf(customerCpf);
 
 		CustomerCardsPurchasesDTO customer = mapper.map(customerEntity, CustomerCardsPurchasesDTO.class);
 		
@@ -100,7 +108,7 @@ public class CustomerService {
 			
 			List<GetPurchaseDTO> purchases = new ArrayList<>();
 			
-			for (PurchaseEntity purchaseEntity : purchaseRepository.findByCardId(cardEntity.getId())) {
+			for (PurchaseEntity purchaseEntity : purchaseRepository.findByCardIdAndContested(cardEntity.getId(), false)) {
 				purchases.add(mapper.map(purchaseEntity, GetPurchaseDTO.class));
 				card.setPurchases(purchases);
 			}
@@ -148,11 +156,11 @@ public class CustomerService {
 		return str.replace(",", "").replace(" ", "").replace("[", "").replace("]", "");
 	}
 	
-	private CustomerEntity findCustomerById(String customerCpf) {
+	private CustomerEntity findCustomerByCpf(String customerCpf) {
 		Optional<CustomerEntity> customer = customerRepository.findByCpf(customerCpf);
 
 		if (!customer.isPresent()) {
-			// retornar erro
+			throw new CustomerException("There is no user with this document number");
 		}
 
 		return customer.get();

@@ -1,27 +1,11 @@
 package com.example.itauchallenge.model;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-import lombok.AccessLevel;
-import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
-@Data
-public class GetPurchaseDTO {
+public class GetPurchaseDTO extends PurchaseBaseDTO {
 	
+	@Getter @Setter
 	private Integer id;
 
-	private double value;
-
-	@Getter(AccessLevel.NONE)
-	private LocalDateTime date;
-
-	private String establishment;
-
-	private PurchaseType purchaseType;
-	
-	public String getDate() {
-		return this.date.format(DateTimeFormatter.ofPattern("dd/MM/uuuu"));
-	}
 }

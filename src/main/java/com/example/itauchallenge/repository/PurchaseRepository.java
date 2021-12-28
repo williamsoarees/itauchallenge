@@ -9,5 +9,7 @@ import com.example.itauchallenge.entity.PurchaseEntity;
 public interface PurchaseRepository extends CrudRepository<PurchaseEntity, Integer> {
 
 	List<PurchaseEntity> findByCardId(Integer id);
+	
+	List<PurchaseEntity> findByCardIdAndContested(Integer id, boolean contested);
 
 }

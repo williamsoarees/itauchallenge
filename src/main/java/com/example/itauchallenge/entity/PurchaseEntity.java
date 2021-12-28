@@ -40,5 +40,8 @@ public class PurchaseEntity {
 	@ManyToOne
 	@Cascade(CascadeType.ALL)
 	private CardEntity card;
-
+	
+	@Column(name = "contested")
+	private boolean contested;
+	
 }

@@ -23,6 +23,6 @@ public class ContestationEntity {
 	@OneToOne
 	private PurchaseEntity purchase;
 
-	private String protocolo = LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMuuuu"))
+	private String protocol = LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMuuuu"))
 			+ String.valueOf(Math.floor(Math.random() * 60000)).replace(".0", "");
 }

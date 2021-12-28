@@ -1,27 +1,13 @@
 package com.example.itauchallenge.model;
 
-import java.time.LocalDateTime;
-
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-public class PurchaseDTO {
+public class PurchaseDTO extends PurchaseBaseDTO{
 
-	@NotNull
-	private double value;
-
-	@NotNull
-	private LocalDateTime date = LocalDateTime.now();
-
-	@NotBlank
-	private String establishment;
-
-	@NotNull
-	private PurchaseType purchaseType;
-	
+	@Getter @Setter
 	@NotNull
 	private CardDTO card;
 }
