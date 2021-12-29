@@ -36,7 +36,7 @@ public class PurchaseService {
 		Optional<CardEntity> cardEntity = cardRepository.findByNumberAndExpirationDateAndCvv(
 				purchaseDTO.getCard().getNumber(), purchaseDTO.getCard().getExpirationDate(),
 				purchaseDTO.getCard().getCvv());
-		
+
 		if (!cardEntity.isPresent()) {
 			throw new CardException("The card is invalid!");
 		}
@@ -48,8 +48,8 @@ public class PurchaseService {
 		purchaseRepository.save(purchaseEntity);
 	}
 
-	public ContestationDTO createContestation(Integer contestationId) {
-		Optional<PurchaseEntity> purchaseEntity = purchaseRepository.findById(contestationId);
+	public ContestationDTO createContestation(Integer purchaseId) {
+		Optional<PurchaseEntity> purchaseEntity = purchaseRepository.findById(purchaseId);
 
 		if (!purchaseEntity.isPresent()) {
 			throw new PurchaseException("There is no purchase with this identifier.");
@@ -62,9 +62,11 @@ public class PurchaseService {
 		ContestationEntity contestationEntity = new ContestationEntity();
 		contestationEntity.setPurchase(purchaseEntity.get());
 		purchaseEntity.get().setContested(true);
+
 		purchaseRepository.save(purchaseEntity.get());
 
 		return mapper.map(contestationRepository.save(contestationEntity), ContestationDTO.class);
+
 	}
 
 }

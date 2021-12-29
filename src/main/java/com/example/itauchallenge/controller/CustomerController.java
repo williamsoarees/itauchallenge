@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.itauchallenge.model.CardDTO;
 import com.example.itauchallenge.model.CardsDTO;
+import com.example.itauchallenge.model.ContestationsDTO;
 import com.example.itauchallenge.model.CustomerCardsPurchasesDTO;
 import com.example.itauchallenge.model.CustomerDTO;
 import com.example.itauchallenge.model.CustomersDTO;
@@ -51,5 +52,10 @@ public class CustomerController {
 	public ResponseEntity<CustomerCardsPurchasesDTO> getCustomerComplete(
 			@PathVariable(name = "customer_cpf") String cpf) {
 		return ResponseEntity.ok(customerService.customerComplete(cpf));
+	}
+
+	@GetMapping("/v1/customers/{customer_cpf}/contestations")
+	public ResponseEntity<ContestationsDTO> getContestations(@PathVariable(name = "customer_cpf") String cpf) {
+		return ResponseEntity.ok(customerService.getConstestations(cpf));
 	}
 }

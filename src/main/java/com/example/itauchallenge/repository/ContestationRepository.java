@@ -4,6 +4,8 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.example.itauchallenge.entity.ContestationEntity;
 
-public interface ContestationRepository extends CrudRepository<ContestationEntity, Integer>{
+public interface ContestationRepository extends CrudRepository<ContestationEntity, Integer> {
+
+	ContestationEntity findByPurchaseId(Integer id);
 
 }
