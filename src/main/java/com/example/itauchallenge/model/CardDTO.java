@@ -6,6 +6,8 @@ import lombok.Data;
 
 @Data
 public class CardDTO {
+	
+//	private Integer id;
 
 	@NotBlank
 	private String number;

@@ -15,21 +15,28 @@ import com.example.itauchallenge.model.ContestationDTO;
 import com.example.itauchallenge.model.PurchaseDTO;
 import com.example.itauchallenge.service.PurchaseService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @RequestMapping("itauchallenge")
+@Api(value = "Purchase", tags = { "Purchases" })
 public class PurchaseController {
 
 	@Autowired
 	private PurchaseService purchaseService;
 
 	@PostMapping("/v1/purchases")
+	@ApiOperation(value = "Create an purchase")
 	public ResponseEntity<Void> createPurchase(@Valid @RequestBody PurchaseDTO purchaseDTO) {
 		purchaseService.createPurchase(purchaseDTO);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 	@PostMapping("/v1/purchases/{purchase_id}/contestations")
-	public ResponseEntity<ContestationDTO> createContestation(@PathVariable(name = "purchase_id") @Valid Integer purchaseId) {
+	@ApiOperation(value = "Create an contestion for purchase")
+	public ResponseEntity<ContestationDTO> createContestation(
+			@PathVariable(name = "purchase_id") @Valid Integer purchaseId) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(purchaseService.createContestation(purchaseId));
 	}
 

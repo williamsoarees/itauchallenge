@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import com.example.itauchallenge.entity.CardEntity;
 import com.example.itauchallenge.entity.ContestationEntity;
 import com.example.itauchallenge.entity.CustomerEntity;
-import com.example.itauchallenge.entity.PurchaseEntity;
 import com.example.itauchallenge.exceptions.CustomerException;
 import com.example.itauchallenge.model.CardContestationsDTO;
 import com.example.itauchallenge.model.CardDTO;
@@ -64,9 +63,8 @@ public class CustomerService {
 	public CustomersDTO getCustomers() {
 		CustomersDTO customers = new CustomersDTO();
 
-		for (CustomerEntity customerEntity : customerRepository.findAll()) {
-			customers.addCustomer(mapper.map(customerEntity, CustomerDTO.class));
-		}
+		customerRepository.findAll()
+				.forEach(customerEntity -> customers.addCustomer(mapper.map(customerEntity, CustomerDTO.class)));
 
 		return customers;
 	}
@@ -85,41 +83,35 @@ public class CustomerService {
 	public CardsDTO getCards(String customerCpf) {
 		CardsDTO cards = new CardsDTO();
 
-		for (CardEntity cardEntity : findCustomerByCpf(customerCpf).getCards()) {
-			cards.addCard(mapper.map(cardEntity, CardDTO.class));
-		}
+		findCustomerByCpf(customerCpf).getCards()
+				.forEach(cardEntity -> cards.addCard(mapper.map(cardEntity, CardDTO.class)));
 
 		return cards;
 	}
 
 	public ContestationsDTO getConstestations(String customerCpf) {
 
-		CustomerEntity customerEntity = findCustomerByCpf(customerCpf);
-
 		ContestationsDTO contestationsDTO = new ContestationsDTO();
 
-		for (CardEntity cardEntity : customerEntity.getCards()) {
+		findCustomerByCpf(customerCpf).getCards().forEach(cardEntity -> {
 
 			List<ContestationDTO> purchaseContestations = new ArrayList<>();
 
-			for (PurchaseEntity purchaseEntity : purchaseRepository.findByCardIdAndContested(cardEntity.getId(),
-					true)) {
-
+			purchaseRepository.findByCardIdAndContested(cardEntity.getId(), true).forEach(purchaseEntity -> {
 				ContestationEntity contestationEntity = contestationRepository.findByPurchaseId(purchaseEntity.getId());
 
 				purchaseContestations.add(ContestationDTO.builder().id(purchaseEntity.getId())
 						.purchase(mapper.map(contestationEntity.getPurchase(), PurchaseBaseDTO.class))
 						.protocol(contestationEntity.getProtocol()).build());
-			}
+			});
 
 			CardContestationsDTO cardContestationsDTO = new CardContestationsDTO();
 			cardContestationsDTO.setCard(cardEntity.getNumber());
 			cardContestationsDTO.setPurchases(purchaseContestations);
 
 			contestationsDTO.addContestations(cardContestationsDTO);
-		}
-		// PEGAR TODAS AS CONTESTAÇÕES POR CARTÃO
-		// Colocar o swagger
+		});
+
 		return contestationsDTO;
 	}
 
@@ -142,21 +134,19 @@ public class CustomerService {
 
 		List<CardPurchasesDTO> cards = new ArrayList<>();
 
-		for (CardEntity cardEntity : customerEntity.getCards()) {
+		customerEntity.getCards().forEach(cardEntity -> {
 			CardPurchasesDTO card = new CardPurchasesDTO();
 			card.setNumber(cardEntity.getNumber());
 
 			List<GetPurchaseDTO> purchases = new ArrayList<>();
 
-			for (PurchaseEntity purchaseEntity : purchaseRepository.findByCardIdAndContested(cardEntity.getId(),
-					false)) {
+			purchaseRepository.findByCardIdAndContested(cardEntity.getId(), false).forEach(purchaseEntity -> {
 				purchases.add(mapper.map(purchaseEntity, GetPurchaseDTO.class));
 				card.setPurchases(purchases);
-			}
-
+			});
 			card.setPurchases(purchases);
 			cards.add(card);
-		}
+		});
 
 		customer.setCards(cards);
 
@@ -167,8 +157,6 @@ public class CustomerService {
 		Random random = new Random();
 
 		List<Integer> cardNumber = new ArrayList<>();
-
-		// Para o banco itaú os cartões são visa ou master, depois gerar cartões assim
 
 		for (int i = 0; i < 15; i++) {
 			cardNumber.add(random.nextInt(9));

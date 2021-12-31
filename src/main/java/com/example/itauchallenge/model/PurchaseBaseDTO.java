@@ -1,35 +1,28 @@
 package com.example.itauchallenge.model;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Valid
 public class PurchaseBaseDTO {
 
 	@NotNull
-	private double value;
+	@Positive
+	private Double value;
 
-	private LocalDateTime date;
+	private Date date = new Date();
 
 	@NotBlank
 	private String establishment;
 
 	@NotNull
 	private PurchaseType purchaseType;
-	
-	public String getDate() {
-		return this.date.format(DateTimeFormatter.ofPattern("dd/MM/uuuu"));
-	}
 
 }

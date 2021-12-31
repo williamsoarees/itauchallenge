@@ -17,7 +17,7 @@ public class CustomerDTO {
 	private String name;
 
 	@NotNull
-	@CPF
+	@CPF(message = "The cpf is invalid")
 	private String cpf;
 
 	@NotNull

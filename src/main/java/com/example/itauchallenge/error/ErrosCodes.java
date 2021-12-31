@@ -7,10 +7,8 @@ import lombok.Getter;
 @Getter
 public enum ErrosCodes {
 
-	INTERNAL_SERVER_ERROR("Internal server error"),
-	INVALID_REQUEST("Invalid request"),
-	PURCHASE_ERROR("There was a problem with the purchase"),
-	CUSTOMER_ERROR("There was a problem with the customer"),
+	INTERNAL_SERVER_ERROR("Internal server error"), INVALID_REQUEST("Invalid request"),
+	PURCHASE_ERROR("There was a problem with the purchase"), CUSTOMER_ERROR("There was a problem with the customer"),
 	CARD_ERROR("There was a problem with the card");
 
 	private final String mensagem;
